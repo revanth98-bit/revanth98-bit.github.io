@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            color: var(--text-color);
+        }
+
+        .item-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: var(--card-bg);
+            color: var(--text-color);
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .logout-btn {
+            background: var(--danger-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            filter: brightness(90%);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-overlay);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            opacity: 0;
+            color: var(--text-color);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal h2 {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal h2 i {
+            color: var(--primary-color);
+        }
+
+        .modal .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .modal .close-modal:hover {
+            color: var(--danger-color);
+            background: var(--skill-hover-bg);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .form-buttons button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-button {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .submit-button:hover {
+            filter: brightness(90%);
+            transform: translateY(-1px);
+        }
+
+        .cancel-button {
+            background: var(--skill-hover-bg);
+            color: var(--text-color);
+        }
+
+        .cancel-button:hover {
+            background: var(--border-color);
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            width: 35px;
+            height: 35px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px var(--hover-shadow);
+        }
+
+        .theme-toggle i {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 0.75rem;
+                right: 0.75rem;
+                width: 32px;
+                height: 32px;
+                padding: 0.4rem;
+            }
+            
+            .theme-toggle i {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Form input focus styles */
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Image preview enhancements */
+        .image-preview-container {
+            margin-top: 1rem;
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .image-preview-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-preview-container .remove-image {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #e74c3c;
+            transition: all 0.2s ease;
+        }
+
+        .image-preview-container .remove-image:hover {
+            background: #fff;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 1rem auto;
+                padding: 1.5rem;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .form-buttons button {
+                width: 100%;
+            }
+        }
+
+        /* Delete Confirmation Modal */
+        .delete-modal .modal-content {
+            max-width: 400px;
+        }
+
+        .delete-modal .modal-content h2 {
+            color: #e74c3c;
+        }
+
+        .delete-modal .modal-content p {
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .delete-modal .form-buttons .submit-button {
+            background: #e74c3c;
+        }
+
+        .delete-modal .form-buttons .submit-button:hover {
+            background: #c0392b;
+        }
+
+        /* Work card improvements */
+        .work-icon {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        /* Skill icon preview */
+        .skill-preview {
+            font-size: 2rem;
+            color: #3498db;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .skill-preview img {
+            height: 2rem;
+            width: auto;
+        }
+
+        /* Hobby icon preview */
+        .hobby-preview {
+            font-size: 2rem;
+            color: #3498db;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        /* File upload styles */
+        .file-upload {
+            display: none;
+        }
+
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #495057;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+
+        .upload-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .upload-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .upload-preview img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        .file-info {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </div>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Admin Panel</h1>
+            <div class="header-actions">
+                <button onclick="location.href='index.html'" class="tab-button">
+                    <i class="fas fa-home"></i> View Site
+                </button>
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Admin Dashboard Overview Section - Commented Out
+            <div class="summary-section">
+                <h2>Admin Dashboard Overview</h2>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <h3>Total Skills</h3>
+                        <div class="summary-stat" id="adminSkillCount">0</div>
+                        <p>Manage your technical skills and expertise</p>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Total Projects</h3>
+                        <div class="summary-stat" id="adminProjectCount">0</div>
+                        <p>Track your portfolio projects</p>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Total Hobbies</h3>
+                        <div class="summary-stat" id="adminHobbyCount">0</div>
+                        <p>Manage your interests and activities</p>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Last Updated</h3>
+                        <div class="summary-stat" id="lastUpdated">-</div>
+                        <p>Keep your portfolio current</p>
+                    </div>
+                </div>
+            </div>
+            -->
+        </div>
+
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="showTab('works')">Works</button>
+            <button class="tab-button" onclick="showTab('skills')">Skills</button>
+            <button class="tab-button" onclick="showTab('personal')">Personal Info</button>
+            <button class="tab-button" onclick="showTab('hobbies')">Hobbies</button>
+        </div>
+
+        <!-- Works Section -->
+        <div id="works" class="tab-content admin-section active">
+            <h2>Manage Works</h2>
+            <button onclick="openAddWorkModal()" class="submit-button">
+                <i class="fas fa-plus"></i> Add New Work
+            </button>
+            <div id="worksList" class="items-grid"></div>
+        </div>
+
+        <!-- Skills Section -->
+        <div id="skills" class="tab-content admin-section">
+            <h2>Manage Skills</h2>
+            <button onclick="openAddSkillModal()" class="submit-button">
+                <i class="fas fa-plus"></i> Add New Skill
+            </button>
+            <div id="skillsList" class="items-grid"></div>
+        </div>
+
+        <!-- Personal Info Section -->
+        <div id="personal" class="tab-content admin-section">
+            <h2>Personal Information</h2>
+            <form id="personalInfoForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="title">Professional Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn URL</label>
+                    <input type="url" id="linkedin" name="linkedin" required>
+                </div>
+                <div class="form-group">
+                    <label for="github">GitHub URL</label>
+                    <input type="url" id="github" name="github" required>
+                </div>
+                <div class="form-group">
+                    <label for="instagram">Instagram URL</label>
+                    <input type="url" id="instagram" name="instagram" required>
+                </div>
+                <button type="submit" class="submit-button">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Hobbies Section -->
+        <div id="hobbies" class="tab-content admin-section">
+            <h2>Manage Hobbies</h2>
+            <button onclick="openAddHobbyModal()" class="submit-button">
+                <i class="fas fa-plus"></i> Add New Hobby
+            </button>
+            <div id="hobbiesList" class="items-grid"></div>
+        </div>
+    </div>
+
+    <!-- Work Modal -->
+    <div id="workModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('workModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2><i class="fas fa-briefcase"></i> Add/Edit Work</h2>
+            <form id="workForm">
+                <input type="hidden" id="workId">
+                <div class="form-group">
+                    <label for="workTitle">Title</label>
+                    <input type="text" id="workTitle" required placeholder="Enter work title">
+                </div>
+                <div class="form-group">
+                    <label for="workDescription">Description</label>
+                    <textarea id="workDescription" required placeholder="Enter work description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="workImage">Image URL</label>
+                    <input type="url" id="workImage" placeholder="Enter image URL">
+                    <div class="image-preview-container" id="workImagePreviewContainer">
+                        <img id="workImagePreview" alt="Preview">
+                        <button type="button" class="remove-image" onclick="removeWorkImage()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="workLink">Project Link</label>
+                    <input type="url" id="workLink" placeholder="Enter project URL">
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-save"></i> Save Work
+                    </button>
+                    <button type="button" class="cancel-button" onclick="closeModal('workModal')">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Skill Modal -->
+    <div id="skillModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('skillModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2><i class="fas fa-code"></i> Add/Edit Skill</h2>
+            <form id="skillForm">
+                <input type="hidden" id="skillId">
+                <div class="form-group">
+                    <label for="skillName">Name</label>
+                    <input type="text" id="skillName" required placeholder="Enter skill name">
+                </div>
+                <div class="form-group">
+                    <label for="iconType">Icon Type</label>
+                    <select id="iconType" required onchange="handleIconTypeChange()">
+                        <option value="fontawesome">Font Awesome</option>
+                        <option value="devicon">Devicon</option>
+                        <option value="custom">Custom SVG</option>
+                        <option value="upload">Upload Image</option>
+                    </select>
+                    <small>Choose the type of icon you want to use</small>
+                </div>
+                <div class="form-group" id="iconValueGroup">
+                    <label for="iconValue">Icon Value</label>
+                    <input type="text" id="iconValue" required placeholder="Enter icon value">
+                    <small id="iconValueHelp">
+                        Font Awesome: class name (e.g., "fab fa-python")<br>
+                        Devicon: URL to icon<br>
+                        Custom: SVG markup
+                    </small>
+                </div>
+                <div class="form-group" id="iconUploadGroup" style="display: none;">
+                    <label for="iconFile">Upload Icon</label>
+                    <input type="file" id="iconFile" class="file-upload" accept="image/*" onchange="handleIconUpload(event)">
+                    <label for="iconFile" class="upload-btn">
+                        <i class="fas fa-upload"></i> Choose Image
+                    </label>
+                    <div id="uploadPreview" class="upload-preview" style="display: none;">
+                        <img id="uploadPreviewImage" alt="Icon preview">
+                        <div class="file-info"></div>
+                    </div>
+                </div>
+                <div id="skillPreview" class="skill-preview"></div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-save"></i> Save Skill
+                    </button>
+                    <button type="button" class="cancel-button" onclick="closeModal('skillModal')">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hobby Modal -->
+    <div id="hobbyModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('hobbyModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2><i class="fas fa-heart"></i> Add/Edit Hobby</h2>
+            <form id="hobbyForm">
+                <input type="hidden" id="hobbyId">
+                <div class="form-group">
+                    <label for="hobbyName">Name</label>
+                    <input type="text" id="hobbyName" required placeholder="Enter hobby name">
+                </div>
+                <div class="form-group">
+                    <label for="hobbyIconType">Icon Type</label>
+                    <select id="hobbyIconType" required onchange="handleHobbyIconTypeChange()">
+                        <option value="fontawesome">Font Awesome</option>
+                        <option value="devicon">Devicon</option>
+                        <option value="custom">Custom SVG</option>
+                        <option value="upload">Upload Image</option>
+                    </select>
+                    <small>Choose the type of icon you want to use</small>
+                </div>
+                <div class="form-group" id="hobbyIconValueGroup">
+                    <label for="hobbyIconValue">Icon Value</label>
+                    <input type="text" id="hobbyIconValue" required placeholder="Enter icon value">
+                    <small id="hobbyIconValueHelp">
+                        Font Awesome: class name (e.g., "fas fa-book-reader")<br>
+                        Devicon: URL to icon<br>
+                        Custom: SVG markup
+                    </small>
+                </div>
+                <div class="form-group" id="hobbyIconUploadGroup" style="display: none;">
+                    <label for="hobbyIconFile">Upload Icon</label>
+                    <input type="file" id="hobbyIconFile" class="file-upload" accept="image/*" onchange="handleHobbyIconUpload(event)">
+                    <label for="hobbyIconFile" class="upload-btn">
+                        <i class="fas fa-upload"></i> Choose Image
+                    </label>
+                    <div id="hobbyUploadPreview" class="upload-preview" style="display: none;">
+                        <img id="hobbyUploadPreviewImage" alt="Icon preview">
+                        <div class="file-info"></div>
+                    </div>
+                </div>
+                <div id="hobbyPreview" class="hobby-preview"></div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-save"></i> Save Hobby
+                    </button>
+                    <button type="button" class="cancel-button" onclick="closeModal('hobbyModal')">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal delete-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('deleteConfirmModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h2>
+            <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+            <div class="form-buttons">
+                <button onclick="confirmDelete()" class="submit-button">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button onclick="closeModal('deleteConfirmModal')" class="cancel-button">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add your scripts here -->
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeIcon = document.querySelector('.theme-toggle i');
+            themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        // Initialize theme when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            // ... rest of your initialization code ...
+        });
+    </script>
+</body>
+</html> 

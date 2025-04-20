@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venkata Revanth Kumar Atmakuru - Software Engineer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </div>
+    <div class="container">
+        <header>
+            <div class="profile-header">
+                <div class="profile-info">
+                    <h1>Venkata Revanth Kumar Atmakuru</h1>
+                    <h2>Software Engineer</h2>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> Hyderabad, Telangana, India</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Portfolio Overview Section - Commented Out
+        <div class="summary-section">
+            <h2>Portfolio Overview</h2>
+            <div class="summary-content">
+                <div class="summary-item">
+                    <h3>Skills</h3>
+                    <div class="summary-stat" id="skillCount">0</div>
+                    <p>Professional skills across various technologies and tools</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Projects</h3>
+                    <div class="summary-stat" id="projectCount">0</div>
+                    <p>Completed projects showcasing expertise</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Experience</h3>
+                    <div class="summary-stat">3+</div>
+                    <p>Years of professional experience</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Interests</h3>
+                    <div class="summary-stat" id="hobbyCount">0</div>
+                    <p>Areas of personal interest and growth</p>
+                </div>
+            </div>
+        </div>
+        -->
+
+        <section class="contact-info">
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <a href="tel:+918374801372">+91 8374801372</a>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <a href="mailto:revanthatmakuru98@gmail.com">revanthatmakuru98@gmail.com</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-linkedin"></i>
+                <a href="https://www.linkedin.com/in/venkata-revanth-kumar-atmakuru-116766175/" target="_blank">LinkedIn Profile</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-github"></i>
+                <a href="https://github.com/revanth98-bit" target="_blank">GitHub Profile</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-instagram"></i>
+                <a href="https://www.instagram.com/rev1nthkumar/" target="_blank">Instagram Profile</a>
+            </div>
+        </section>
+
+        <main>
+            <section class="works">
+                <h3>My Works</h3>
+                <div id="worksList" class="works-grid">
+                    <!-- Works will be loaded here -->
+                </div>
+            </section>
+
+            <section class="about">
+                <h3>About Me</h3>
+                <p>Software Engineer with 3.3 years of experience specializing in Python3, Flask, Django, FastAPI, PostgreSQL, and DevOps. 
+                Skilled in developing web applications, managing databases, and automating deployment processes to enhance efficiency and 
+                performance. Proficient in REST API development.</p>
+            </section>
+
+            <section class="skills">
+                <h3>Technical Skills</h3>
+                <div class="skills-container">
+                    <div class="skills-scroll" id="skillsScroll">
+                        <!-- Skills will be loaded dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <section class="interests">
+                <h3>Hobbies & Interests</h3>
+                <div id="hobbiesList" class="hobbies-grid">
+                    <!-- Hobbies will be loaded here -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Venkata Revanth Kumar Atmakuru <a href="admin.html" class="admin-link">Admin</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeIcon = document.querySelector('.theme-toggle i');
+            themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        // Initialize theme when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadWorks();
+            loadSkills();
+            loadHobbies();
+        });
+
+        // Get default hobbies if none exist
+        function getDefaultHobbies() {
+            return [
+                {
+                    id: 1,
+                    name: "AI Driven Development",
+                    iconType: "fontawesome",
+                    iconValue: "fas fa-robot"
+                },
+                {
+                    id: 2,
+                    name: "Latest Tech News",
+                    iconType: "fontawesome",
+                    iconValue: "fas fa-newspaper"
+                },
+                {
+                    id: 3,
+                    name: "Reading Books",
+                    iconType: "fontawesome",
+                    iconValue: "fas fa-book-reader"
+                },
+                {
+                    id: 4,
+                    name: "Playing Badminton",
+                    iconType: "custom",
+                    iconValue: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 1.5c-2.5 0-4.5 2-4.5 4.5 0 1.4.6 2.7 1.7 3.5L11.9 14c-.3-.2-.6-.3-1-.3-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8 1.8-.8 1.8-1.8c0-.4-.1-.7-.3-1l3.9-4.8c.8 1 2.1 1.7 3.5 1.7 2.5 0 4.5-2 4.5-4.5s-2-4.5-4.5-4.5zM9 16.2c-.4 0-.8-.3-.8-.8s.3-.8.8-.8.8.3.8.8zm9.5-6.2c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5z"/></svg>'
+                },
+                {
+                    id: 5,
+                    name: "Bike Riding",
+                    iconType: "fontawesome",
+                    iconValue: "fas fa-motorcycle"
+                },
+                {
+                    id: 6,
+                    name: "Traveling",
+                    iconType: "fontawesome",
+                    iconValue: "fas fa-plane-departure"
+                }
+            ];
+        }
+
+        // Get hobby icon based on type
+        function getHobbyIcon(hobby) {
+            switch (hobby.iconType) {
+                case 'fontawesome':
+                    return `<i class="${hobby.iconValue}"></i>`;
+                case 'devicon':
+                    return `<img src="${hobby.iconValue}" alt="${hobby.name}">`;
+                case 'custom':
+                    if (hobby.iconValue.startsWith('data:image')) {
+                        return `<img src="${hobby.iconValue}" alt="${hobby.name}">`;
+                    }
+                    return hobby.iconValue;
+                default:
+                    return '<i class="fas fa-star"></i>';
+            }
+        }
+
+        // Load works from localStorage
+        function loadWorks() {
+            const works = JSON.parse(localStorage.getItem('portfolioWorks')) || [];
+            const worksList = document.getElementById('worksList');
+            worksList.innerHTML = works.map(work => `
+                <div class="work-card">
+                    ${work.image ? `<img src="${work.image}" alt="${work.title}">` : ''}
+                    <h4>${work.title}</h4>
+                    <p>${work.description}</p>
+                    ${work.link ? `<a href="${work.link}" target="_blank" class="work-link">View Project</a>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Load skills from localStorage
+        function loadSkills() {
+            const skills = JSON.parse(localStorage.getItem('portfolioSkills')) || getDefaultSkills();
+            const skillsScroll = document.getElementById('skillsScroll');
+            
+            // Generate skills HTML
+            const skillsHTML = skills.map(skill => `
+                <div class="skill-item" title="${skill.name}">
+                    ${getSkillIcon(skill)}
+                    <span>${skill.name}</span>
+                </div>
+            `).join('');
+
+            // Add skills twice for infinite scroll effect
+            skillsScroll.innerHTML = skillsHTML + skillsHTML;
+        }
+
+        // Get default skills if none exist
+        function getDefaultSkills() {
+            return [
+                {
+                    id: 1,
+                    name: "Python3",
+                    iconType: "fontawesome",
+                    iconValue: "fab fa-python"
+                },
+                {
+                    id: 2,
+                    name: "HTML5",
+                    iconType: "fontawesome",
+                    iconValue: "fab fa-html5"
+                },
+                {
+                    id: 3,
+                    name: "CSS3",
+                    iconType: "fontawesome",
+                    iconValue: "fab fa-css3-alt"
+                },
+                {
+                    id: 4,
+                    name: "JavaScript",
+                    iconType: "fontawesome",
+                    iconValue: "fab fa-js"
+                },
+                {
+                    id: 5,
+                    name: "Django",
+                    iconType: "devicon",
+                    iconValue: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg"
+                },
+                {
+                    id: 6,
+                    name: "Flask",
+                    iconType: "devicon",
+                    iconValue: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg"
+                },
+                {
+                    id: 7,
+                    name: "FastAPI",
+                    iconType: "custom",
+                    iconValue: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.375 0 0 5.375 0 12c0 6.627 5.375 12 12 12 6.626 0 12-5.373 12-12 0-6.625-5.373-12-12-12zm-.624 21.62v-7.528H7.19L13.203 2.38v7.528h4.029L11.376 21.62z"/></svg>'
+                },
+                {
+                    id: 8,
+                    name: "AWS",
+                    iconType: "fontawesome",
+                    iconValue: "fab fa-aws"
+                },
+                {
+                    id: 9,
+                    name: "Docker",
+                    iconType: "fontawesome",
+                    iconValue: "fab fa-docker"
+                },
+                {
+                    id: 10,
+                    name: "PostgreSQL",
+                    iconType: "devicon",
+                    iconValue: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+                }
+            ];
+        }
+
+        // Get skill icon based on type
+        function getSkillIcon(skill) {
+            switch (skill.iconType) {
+                case 'fontawesome':
+                    return `<i class="${skill.iconValue}"></i>`;
+                case 'devicon':
+                    return `<img src="${skill.iconValue}" alt="${skill.name}">`;
+                case 'custom':
+                    if (skill.iconValue.startsWith('data:image')) {
+                        return `<img src="${skill.iconValue}" alt="${skill.name}">`;
+                    }
+                    return skill.iconValue;
+                default:
+                    return '<i class="fas fa-code"></i>';
+            }
+        }
+
+        // Load hobbies from localStorage
+        function loadHobbies() {
+            const hobbies = JSON.parse(localStorage.getItem('portfolioHobbies')) || getDefaultHobbies();
+            const hobbiesList = document.getElementById('hobbiesList');
+            
+            if (!hobbies || hobbies.length === 0) {
+                const defaultHobbies = getDefaultHobbies();
+                localStorage.setItem('portfolioHobbies', JSON.stringify(defaultHobbies));
+                hobbies = defaultHobbies;
+            }
+
+            hobbiesList.innerHTML = hobbies.map(hobby => `
+                <div class="hobby-card">
+                    <div class="hobby-icon">
+                        ${getHobbyIcon(hobby)}
+                    </div>
+                    <h4>${hobby.name}</h4>
+                </div>
+            `).join('');
+        }
+
+        // Load personal info from localStorage
+        function loadPersonalInfo() {
+            const defaultInfo = {
+                fullName: "Venkata Revanth Kumar Atmakuru",
+                title: "Software Engineer",
+                location: "Hyderabad, Telangana, India",
+                phone: "+91 8374801372",
+                email: "revanthatmakuru98@gmail.com",
+                linkedin: "https://www.linkedin.com/in/venkata-revanth-kumar-atmakuru-116766175/",
+                github: "https://github.com/revanth98-bit",
+                instagram: "https://www.instagram.com/rev1nthkumar/"
+            };
+
+            const info = JSON.parse(localStorage.getItem('portfolioPersonalInfo')) || defaultInfo;
+
+            // Update the DOM with personal info
+            document.querySelector('.profile-info h1').textContent = info.fullName;
+            document.querySelector('.profile-info h2').textContent = info.title;
+            document.querySelector('.location').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${info.location}`;
+            
+            // Update contact information
+            document.querySelector('.contact-item a[href^="tel:"]').href = `tel:${info.phone}`;
+            document.querySelector('.contact-item a[href^="tel:"]').textContent = info.phone;
+            
+            document.querySelector('.contact-item a[href^="mailto:"]').href = `mailto:${info.email}`;
+            document.querySelector('.contact-item a[href^="mailto:"]').textContent = info.email;
+            
+            document.querySelector('.contact-item a[href*="linkedin"]').href = info.linkedin;
+            document.querySelector('.contact-item a[href*="github"]').href = info.github;
+            document.querySelector('.contact-item a[href*="instagram"]').href = info.instagram;
+        }
+    </script>
+
+    <style>
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            width: 35px;
+            height: 35px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px var(--hover-shadow);
+        }
+
+        .theme-toggle i {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 0.75rem;
+                right: 0.75rem;
+                width: 32px;
+                height: 32px;
+                padding: 0.4rem;
+            }
+            
+            .theme-toggle i {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</body>
+</html> 

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 380px;
+            min-height: 450px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .login-header {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(var(--border-color-rgb), 0.1);
+            background: rgba(var(--primary-color-rgb), 0.05);
+        }
+
+        .login-header .icon-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .login-header h1 {
+            font-size: 1.75rem;
+            color: var(--text-color);
+            margin: 0 0 0.75rem;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .login-form-container {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #loginForm {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .error-message,
+        .success-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .error-message.show,
+        .success-message.show {
+            display: flex;
+        }
+
+        .error-message {
+            background-color: rgba(var(--danger-color-rgb), 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(var(--danger-color-rgb), 0.2);
+        }
+
+        .success-message {
+            background-color: rgba(var(--success-color-rgb), 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(var(--success-color-rgb), 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.625rem;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .password-input {
+            position: relative;
+        }
+
+        .password-input input {
+            width: 100%;
+            padding: 1rem;
+            padding-right: 3rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .password-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+        }
+
+        .password-input i {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.7;
+            transition: all 0.2s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .password-input i:hover {
+            opacity: 1;
+            color: var(--primary-color);
+            background-color: rgba(var(--primary-color-rgb), 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: auto;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.2s ease;
+            margin-bottom: 1.25rem;
+        }
+
+        .login-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .login-btn.loading span {
+            visibility: hidden;
+        }
+
+        .login-btn.loading::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.625rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            opacity: 0.8;
+            width: 100%;
+            text-align: center;
+            padding: 0.625rem;
+        }
+
+        .back-btn:hover {
+            color: var(--primary-color);
+            opacity: 1;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-toggle i {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover i {
+            transform: rotate(15deg);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+
+            .login-container {
+                min-height: 420px;
+                margin: 0 1rem;
+            }
+
+            .login-header {
+                padding: 2rem;
+            }
+
+            .login-form-container {
+                padding: 1.75rem;
+            }
+
+            .login-header .icon-container {
+                width: 70px;
+                height: 70px;
+            }
+
+            .login-header i {
+                font-size: 1.75rem;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .theme-toggle {
+                top: 0.75rem;
+                right: 0.75rem;
+                width: 32px;
+                height: 32px;
+            }
+            
+            .theme-toggle i {
+                font-size: 1rem;
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="icon-container">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h1>Admin Login</h1>
+            <p>Enter your password to access the admin panel</p>
+        </div>
+
+        <div class="login-form-container">
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Incorrect password. Please try again.</span>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                <span>Login successful! Redirecting...</span>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            required 
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+                        <i class="fas fa-eye" id="togglePassword"></i>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Portfolio</span>
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.querySelector('.login-btn');
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeIcon = document.querySelector('.theme-toggle i');
+            themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        // Initialize theme when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+        });
+
+        // Show message function
+        function showMessage(element, show = true) {
+            element.classList.toggle('show', show);
+            if (!show) {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.className = `fas fa-eye${type === 'password' ? '' : '-slash'}`;
+        });
+
+        // Handle login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = passwordInput.value;
+
+            // Show loading state
+            loginButton.classList.add('loading');
+            showMessage(errorMessage, false);
+            showMessage(successMessage, false);
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            if (password === window.APP_CONFIG.ADMIN_PASSWORD) {
+                showMessage(successMessage, true);
+                sessionStorage.setItem('adminAuthenticated', 'true');
+                
+                // Redirect after showing success message
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1000);
+            } else {
+                showMessage(errorMessage, true);
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+
+            // Remove loading state
+            loginButton.classList.remove('loading');
+        });
+
+        // Clear messages when starting to type
+        passwordInput.addEventListener('input', () => {
+            showMessage(errorMessage, false);
+            showMessage(successMessage, false);
+        });
+    </script>
+</body>
+</html> 
