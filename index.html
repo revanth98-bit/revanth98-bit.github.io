@@ -137,7 +137,6 @@
         // Initialize theme when the page loads
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
-            loadWorks();
             loadSkills();
             loadHobbies();
         });
@@ -199,37 +198,6 @@
                 default:
                     return '<i class="fas fa-star"></i>';
             }
-        }
-
-        // Load works from localStorage
-        function loadWorks() {
-            const works = JSON.parse(localStorage.getItem('portfolioWorks')) || [];
-            const worksList = document.getElementById('worksList');
-            worksList.innerHTML = works.map(work => `
-                <div class="work-card">
-                    ${work.image ? `<img src="${work.image}" alt="${work.title}">` : ''}
-                    <h4>${work.title}</h4>
-                    <p>${work.description}</p>
-                    ${work.link ? `<a href="${work.link}" target="_blank" class="work-link">View Project</a>` : ''}
-                </div>
-            `).join('');
-        }
-
-        // Load skills from localStorage
-        function loadSkills() {
-            const skills = JSON.parse(localStorage.getItem('portfolioSkills')) || getDefaultSkills();
-            const skillsScroll = document.getElementById('skillsScroll');
-            
-            // Generate skills HTML
-            const skillsHTML = skills.map(skill => `
-                <div class="skill-item" title="${skill.name}">
-                    ${getSkillIcon(skill)}
-                    <span>${skill.name}</span>
-                </div>
-            `).join('');
-
-            // Add skills twice for infinite scroll effect
-            skillsScroll.innerHTML = skillsHTML + skillsHTML;
         }
 
         // Get default skills if none exist
@@ -298,6 +266,28 @@
             ];
         }
 
+        // Load skills from localStorage
+        function loadSkills() {
+            const skills = getDefaultSkills();
+            const skillsScroll = document.getElementById('skillsScroll');
+            
+            if (!skillsScroll) {
+                console.error('Skills scroll container not found');
+                return;
+            }
+
+            // Generate skills HTML
+            const skillsHTML = skills.map(skill => `
+                <div class="skill-item" title="${skill.name}">
+                    ${getSkillIcon(skill)}
+                    <span>${skill.name}</span>
+                </div>
+            `).join('');
+
+            // Add skills twice for infinite scroll effect
+            skillsScroll.innerHTML = skillsHTML + skillsHTML;
+        }
+
         // Get skill icon based on type
         function getSkillIcon(skill) {
             switch (skill.iconType) {
@@ -317,13 +307,12 @@
 
         // Load hobbies from localStorage
         function loadHobbies() {
-            const hobbies = JSON.parse(localStorage.getItem('portfolioHobbies')) || getDefaultHobbies();
+            const hobbies = getDefaultHobbies();
             const hobbiesList = document.getElementById('hobbiesList');
             
-            if (!hobbies || hobbies.length === 0) {
-                const defaultHobbies = getDefaultHobbies();
-                localStorage.setItem('portfolioHobbies', JSON.stringify(defaultHobbies));
-                hobbies = defaultHobbies;
+            if (!hobbiesList) {
+                console.error('Hobbies list container not found');
+                return;
             }
 
             hobbiesList.innerHTML = hobbies.map(hobby => `
